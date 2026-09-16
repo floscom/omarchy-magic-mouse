@@ -48,11 +48,16 @@ Panel {
       return root.bar.switchPanelFrom(root.barIdentity, direction)
     return false
   }
-  // Third-party widgets get PluginBarApi, where centerHoverRevealSuppressed is
-  // read-only and assigning it throws; go through its setter.
+  // On Omarchy 4.0.3+ third-party widgets get PluginBarApi, where
+  // centerHoverRevealSuppressed is read-only and assigning it throws; go
+  // through its setter. On older Omarchy `bar` is the raw Bar, which has the
+  // writable property but no setter, so fall back to assigning it directly
+  // (same shape as Omarchy's own weather/clock panels).
   function setCenterHoverRevealSuppressed(value) {
     if (root.bar && typeof root.bar.setCenterHoverRevealSuppressed === "function")
       root.bar.setCenterHoverRevealSuppressed(value)
+    else if (root.bar && "centerHoverRevealSuppressed" in root.bar)
+      root.bar.centerHoverRevealSuppressed = value
   }
 
   // ---- config state
